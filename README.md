@@ -28,16 +28,23 @@ pip install -r requirements.txt
 ```
 
 ## Download Weights
+
 Download the weights from my [Google Drive](https://drive.google.com/drive/folders/1UKGe3j5kFLnsjhHriimofuZX5dn3k3dY?usp=sharing).
 Place them at `./Weights`.
 
 # How to Use
+
 The easy way: jupyter notebooks! Open yout terminal and:
 
 ```
 conda activate envname
 
 jupyter notebook
+```
+
+You should use the *envname* kernel on jupyter notebook. If necessary, "install" the kernel and restart the notebook.
+```
+python -m ipykernel install --user --name=envname
 ```
 
 Then, navigate to the **interface_traffic_vehicle_counter.ipynb** and run it!

@@ -786,7 +786,7 @@ class JupyterInterface():
     def _widgets(self):
 
         self.file_selector = HTML('<input type="file" id="selectedFile" style="display: none; " /> \
-                    <input type="button" value="Search Input/ Output Path ..." \
+                    <input type="button" value="Search Local Input/ Output Path ..." \
                     onclick="document.getElementById(\'selectedFile\').click();" />')
 
         self.input_path_widget = widgets.Text(

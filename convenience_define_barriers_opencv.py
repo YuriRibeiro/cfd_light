@@ -16,7 +16,7 @@ class JupyterInterface:
 
     def _widgets(self):
         self.file_selector = HTML('<input type="file" id="selectedFile" style="display: none; " /> \
-                            <input type="button" value="Search Input Path ..." \
+                            <input type="button" value="Search Local Input Path ..." \
                             onclick="document.getElementById(\'selectedFile\').click();" />')
         self.input_path_widget = widgets.Text(
                                         value='',
