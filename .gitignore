@@ -1,1 +1,8 @@
+# Weights (Download the weights from google drive -- check README.md)
 /Weights/**
+## Personal, temp or cache files
+**/.ipynb_checkpoints/
+**/.vscode/
+**/*.code-workspace
+**/__pycache__/
+**/*.pyc
