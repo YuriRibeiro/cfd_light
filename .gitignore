@@ -1,5 +1,6 @@
 # Weights (Download the weights from google drive -- check README.md)
 /Weights/**
+!/Weights/.gitkeep
 ## Personal, temp or cache files
 **/.ipynb_checkpoints/
 **/.vscode/

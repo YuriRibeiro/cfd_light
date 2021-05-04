@@ -883,13 +883,13 @@ class JupyterInterface():
             input_path = ''
         else:
             input_ = pathlib.Path(self.input_path_widget.value)
-            input_path = f'input_path = \'{str(input_)}\''
+            input_path = f'\'{str(input_)}\''
 
         if self.output_fopath_widget.value == '':
             output_fopath = ''
         else:
             output = pathlib.Path(self.output_fopath_widget.value) / f'{input_.stem}_processed_{det}-{trk}'
-            output_fopath = f'output_path = \'{str(output)}\''
+            output_fopath = f'\'{str(output)}\''
 
         device = self.device_selector.value
         det_params = configs.detector_default_params[det]
@@ -920,9 +920,9 @@ class JupyterInterface():
         msg = f'''import traffic_vehicle_counter as tvc
 CountBarrier = tvc.CountBarrier
 
-input_path = {input_path}
+input_path = r{input_path}
 
-output_path = {output_fopath}
+output_path = r{output_fopath}
 
 save = {{
 {save}
@@ -1071,7 +1071,7 @@ if __name__ == '__main__':
                    **save_outputs)
         a.start()
 
-    example1(det='yv3_tiny')
+    #example1(det='yv3_tiny')
     #example2(det='yv3_tiny')
     #example3()
     pass

@@ -304,9 +304,9 @@ class ConvenienceBarriers(InputHandler):
         cv2.createTrackbar("Barrier End Frame", "Define Barriers",1,qtt_of_frames,nothing)
         cv2.setTrackbarMin("Barrier End Frame", "Define Barriers", 1)
 
-        cv2.createTrackbar("//----------------------- INFOS -----------------------//", "Define Barriers", 1,1 , nothing)        
-        cv2.createTrackbar("L-Mouse: Draw // Sroll Mouse Button : Select Nearest (Midpoint of the) Barrirer // f: Save Selected Barrier Frame Range //", "Define Barriers", 1, 1, nothing)        
-        cv2.createTrackbar("Space: Next Frame // d: Delete Selected Barrier // Esc: Quit and Print Results //", "Define Barriers", 1, 1, nothing)
+        #cv2.createTrackbar("//----------------------- INFOS -----------------------//", "Define Barriers", 1,1 , nothing)        
+        #cv2.createTrackbar("L-Mouse: Draw // Sroll Mouse Button : Select Nearest (Midpoint of the) Barrirer // f: Save Selected Barrier Frame Range //", "Define Barriers", 1, 1, nothing)        
+        #cv2.createTrackbar("Space: Next Frame // d: Delete Selected Barrier // Esc: Quit and Print Results //", "Define Barriers", 1, 1, nothing)
 
 
         cv2.setMouseCallback("Define Barriers", click_callback)

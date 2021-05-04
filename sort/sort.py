@@ -19,13 +19,13 @@ from __future__ import print_function
 
 import os
 import numpy as np
-import matplotlib
-if os.environ.get('DISPLAY') is None:
-    matplotlib.use('Agg')
-else:
-    matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+#import matplotlib
+#if os.environ.get('DISPLAY') is None:
+#    matplotlib.use('Agg')
+#else:
+#    matplotlib.use('TkAgg')
+#import matplotlib.pyplot as plt
+#import matplotlib.patches as patches
 from skimage import io
 
 import glob
