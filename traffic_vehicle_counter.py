@@ -18,6 +18,7 @@ from IPython.display import HTML, display, Javascript
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import json
+import time
 
 sys.path.append(str(configs.root / 'sort'))
 sys.path.append(str(configs.root / 'yv5'))
@@ -457,6 +458,9 @@ class Analysis():
                             self.save_track_vid_with_headers    or \
                             self.save_track_vid_lines           or \
                             self.save_track_vid_barriers
+        
+        self.det_time = 0
+        self.trk_time = 0
 
     def _draw_bbox(self, img, xywh, place_headers=False, colors_handler=configs.uavdt_class_colors_rgb):
         img = img.copy()
@@ -555,7 +559,7 @@ class Analysis():
                 ax.set_xlabel('Frame Number', fontsize=14)
                 ax.set_ylabel('Crossings', fontsize=14)
                 ax.set_title(f'Barrier {bi.name} -- Crossings vs Frame', fontsize=16)
-                ax.set_xticks(frames)
+                #ax.set_xticks(frames)
             total_crossings[bi.name] = np.sum(crossing)
             plots[bi.name] = fig
         
@@ -610,7 +614,11 @@ class Analysis():
                 this_video_barriers_activated = True
 
             # Detections Processing
+            tic = time.time()
             detections = self.detector._load_detector(input_path=input_vid)
+            toc = time.time()
+            self.det_time += toc - tic
+
             for data in detections:
                 if data == None: continue
                 frame, img, dets = data #dets: (x,y,w,h,classe,conf)
@@ -672,7 +680,10 @@ class Analysis():
 
                 # Track and save Tracking Outputs
                 if self.tracking_activated:
+                    tic = time.time()
                     self.tracker.update(dets, frame)
+                    toc = time.time()
+                    self.trk_time += toc - tic
 
                     if self.save_track_imgs_without_headers or self.save_track_vid_without_headers:
                         img_temp = self._draw_bbox_tracking(img, self.tracker.mot_labels[frame], color_handler=self.tracker.colors)
@@ -751,17 +762,26 @@ class Analysis():
             if this_video_barriers_activated:
                 barrier_plots, total_crossings = self._plot_barriers_crossings_vs_frame(barriers)
                 text = ''
+                text_crossings = '# Barrier Crossings\n'
                 str_start = '['
                 for barrier in barriers:
                     bname = barrier.name
                     # Save plots
-                    barrier_plots[bname].savefig(str(output_fopath_barriers_plots / f'{video_name}_{bname}.png'), bbox_inches='tight')
+                    barrier_plots[bname].savefig(str(output_fopath_barriers_plots / f'{video_name}_{bname}.pdf'), bbox_inches='tight')
                     # Save Infos
                     text += f'{str_start}{{"barrier_name":"{bname}","total_crossings":{total_crossings[bname]},"frame_vs_cross_dict":{json.dumps(barrier.intersection_frames)}}}'
                     str_start=','
+                    text_crossings += f'{bname} : {total_crossings[bname]}\n'
 
                 with open(str(output_fopath_barriers_plots / f'{video_name}_barrier_infos.json'), 'w') as f:
                     f.write(text+']')
+                
+                with open(str(output_fopath_barriers_plots / f'{video_name}_crossing_infos.txt'), 'w') as f:
+                    f.write(text_crossings)
+
+                with open(str(output_fopath_barriers_plots / f'{video_name}_speed_info.txt'), 'w') as f:
+                    text = f'Frames: {frame}; Det_Time(s): {self.det_time}; Trk_time(s): {self.trk_time}; Total_Time(s): {self.det_time + self.trk_time}; FPS: {frame}'
+                    f.write()
             
             # Release det_json file writer
             output_det_json_file.write(']')
