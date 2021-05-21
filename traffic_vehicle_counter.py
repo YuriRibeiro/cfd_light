@@ -181,6 +181,7 @@ class TrackerSort(TrackerBase):
         self.colors = {} #id:random_color
         self.colors_handler = self._default_colors_handler 
         self.tracker = self._create_tracker()
+        self.trk_time = 0
     
     def get_tracker_parameters(self):
         return self._params
@@ -202,7 +203,10 @@ class TrackerSort(TrackerBase):
                 bboxes_atual[idx] = [x, y, x+w, y+h, score]
         
         # Analisar o frame atual e identificar os bounding boxes id (update SORT)
+        tic = time.time()
         track_bbs_ids = self.tracker.update(bboxes_atual)
+        toc = time.time()
+        self.trk_time += toc - tic
 
         # Passar as coordenadas para o padrão: [frame,x,y,w,h,idx]
         track_bbs_ids[:, 2] = track_bbs_ids[:, 2] - track_bbs_ids[:, 0]
@@ -569,6 +573,8 @@ class Analysis():
     def start(self):
 
         for input_vid in self.input_videos_paths:
+            self.det_time = 0
+            self.trk_time = 0
             first_vid_iter = True
             # Create Output Folders
             video_name = input_vid.stem
@@ -614,14 +620,12 @@ class Analysis():
                 this_video_barriers_activated = True
 
             # Detections Processing
-            tic = time.time()
             detections = self.detector._load_detector(input_path=input_vid)
-            toc = time.time()
-            self.det_time += toc - tic
 
             for data in detections:
                 if data == None: continue
-                frame, img, dets = data #dets: (x,y,w,h,classe,conf)
+                frame, img, dets, det_tot_time = data #dets: (x,y,w,h,classe,conf)
+                self.det_time += det_tot_time #det time = det_tot_time + nms_time
                 if self.save_detection_json:
                     det_str = str(dets)
                     det_table = det_str.maketrans({" ":"", "(":"[", ")":"]"})
@@ -680,10 +684,7 @@ class Analysis():
 
                 # Track and save Tracking Outputs
                 if self.tracking_activated:
-                    tic = time.time()
                     self.tracker.update(dets, frame)
-                    toc = time.time()
-                    self.trk_time += toc - tic
 
                     if self.save_track_imgs_without_headers or self.save_track_vid_without_headers:
                         img_temp = self._draw_bbox_tracking(img, self.tracker.mot_labels[frame], color_handler=self.tracker.colors)
@@ -780,8 +781,14 @@ class Analysis():
                     f.write(text_crossings)
 
                 with open(str(output_fopath_barriers_plots / f'{video_name}_speed_info.txt'), 'w') as f:
-                    text_speed = f'Frames: {frame}; Det_Time(s): {self.det_time}; Trk_time(s): {self.trk_time}; Total_Time(s): {self.det_time + self.trk_time}; FPS: {frame}'
+                    det_time = self.det_time
+                    trk_time = self.tracker.trk_time
+                    total_time = det_time + trk_time
+                    fps = frame / (det_time + trk_time)
+                    text_speed = f'Frames: {frame}; Det_Time(s): {det_time}; Trk_time(s): {trk_time}; Total_Time(s): {total_time}; FPS: {fps}'
                     f.write(text_speed)
+
+                    self.trk_time = self.tracker.trk_time
             
             # Release det_json file writer
             output_det_json_file.write(']')

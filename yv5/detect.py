@@ -74,4 +74,5 @@ def detect(source, weights, device='cpu', img_size=1280, conf_thres=0.4, iou_thr
                     processed_dets.append(line)
         frame_count += 1
         
-        yield frame_count, im0s, processed_dets
+        # t2 - t1 = (Det time + NMS time)
+        yield frame_count, im0s, processed_dets, t2-t1
