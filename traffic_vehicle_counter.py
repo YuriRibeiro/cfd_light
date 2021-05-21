@@ -449,7 +449,7 @@ class Analysis():
                                   self.save_track_vid_barriers
         
         if self.barriers_activated:
-            self.tracking_activated
+            self.tracking_activated = True
 
         self.save_videos =  self.save_det_vid_without_headers   or \
                             self.save_det_vid_with_headers      or \
