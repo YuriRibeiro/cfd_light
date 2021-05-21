@@ -447,6 +447,9 @@ class Analysis():
         
         self.barriers_activated = self.save_track_img_barriers or \
                                   self.save_track_vid_barriers
+        
+        if self.barriers_activated:
+            self.tracking_activated
 
         self.save_videos =  self.save_det_vid_without_headers   or \
                             self.save_det_vid_with_headers      or \
