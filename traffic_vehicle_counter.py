@@ -780,8 +780,8 @@ class Analysis():
                     f.write(text_crossings)
 
                 with open(str(output_fopath_barriers_plots / f'{video_name}_speed_info.txt'), 'w') as f:
-                    text = f'Frames: {frame}; Det_Time(s): {self.det_time}; Trk_time(s): {self.trk_time}; Total_Time(s): {self.det_time + self.trk_time}; FPS: {frame}'
-                    f.write()
+                    text_speed = f'Frames: {frame}; Det_Time(s): {self.det_time}; Trk_time(s): {self.trk_time}; Total_Time(s): {self.det_time + self.trk_time}; FPS: {frame}'
+                    f.write(text_speed)
             
             # Release det_json file writer
             output_det_json_file.write(']')
